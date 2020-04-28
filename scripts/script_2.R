@@ -1,27 +1,25 @@
-#wĹ‚Ä…czenie bibliotek 
-library(tm) 
-library (hunspell)
-library (stringr)
+#włączenie bibliotek
+library(tm)
 
-#zmiana katalogu roboczego 
+#zmiana katalogu roboczego
 workDir <- "C:\\Users\\Beniamin\\Desktop\\Nowy folder\\TextMining"
 setwd(workDir)
 
-#definicja katalogĂłw 
+#definicja katalogów projektu
 inputDir <- ".\\data"
 outputDir <- ".\\results"
 scriptsDir <- ".\\scripts"
 workspaceDir <- ".\\workspaces"
 
-#utworzenie katalogu wyjĹ›ciowego
+#utworzenie katalogu wyjściowego
 dir.create(outputDir, showWarnings = FALSE)
 dir.create(workspaceDir, showWarnings = FALSE)
 
-#utworzenie korpusu dokumentĂłw
+#utworzenie korpusu dokumentów
 corpusDir <- paste(
   inputDir,
   "\\",
-  "Literatura - streszczenia - oryginal",
+  "Literatura - streszczenia - przetworzone",
   sep = ""
 )
 corpus <- VCorpus(
@@ -35,14 +33,70 @@ corpus <- VCorpus(
   )
 )
 
-#tu jeszcze usuniecie rozszerzen 
 #usunięcie rozszerzeń z nazw dokumentów
-cut_extensions <- function(document) {
+cutExtensions <- function(document) {
   meta(document, "id") <- gsub(pattern = "\\.txt$", "", meta(document, "id"))
   return(document)
 }
 
-corpus <- tm_map(corpus, cut_extensions)
+corpus <- tm_map(corpus, cutExtensions)
 
-#utworzenie macierz czestosci
+#utworzenie macierzy częstości
+tdmTfAll <- TermDocumentMatrix(corpus)
+dtmTfAll <- DocumentTermMatrix(corpus)
+tdmTfidfAll <- TermDocumentMatrix(
+  corpus,
+  control = list(
+    weighting = weightTfIdf
+  )
+)
+tdmBinAll <- TermDocumentMatrix(
+  corpus,
+  control = list(
+    weighting = weightBin
+  )
+)
+tdmTfBounds <- TermDocumentMatrix(
+  corpus,
+  control = list(
+    bounds = list(
+      global = c(2,16)
+    )
+  )
+)
+tdmTfidfBounds <- TermDocumentMatrix(
+  corpus,
+  control = list(
+    weighting = weightTfIdf,
+    bounds = list(
+      global = c(2,16)
+    )
+  )
+)
+dtmTfidfBounds <- DocumentTermMatrix(
+  corpus,
+  control = list(
+    weighting = weightTfIdf,
+    bounds = list(
+      global = c(2,16)
+    )
+  )
+)
 
+#konwersja macierzy żadkich do macierzy klasycznych
+tdmTfAllMatrix <- as.matrix(tdmTfAll)
+dtmTfAllMatrix <- as.matrix(dtmTfAll)
+tdmTfidfAllMatrix <- as.matrix(tdmTfidfAll)
+tdmBinAllMatrix <- as.matrix(tdmBinAll)
+tdmTfBoundsMatrix <- as.matrix(tdmTfBounds)
+tdmTfidfBoundsMatrix <- as.matrix(tdmTfidfBounds)
+dtmTfidfBoundsMAtrix <- as.matrix(dtmTfidfBounds)
+
+#eksport macirzy do pliku .csv
+#matrixFile <- paste(
+#  outputDir,
+#  "\\",
+#  "tdmTfidfBounds.csv",
+#  sep = ""
+#)
+#write.table(tdmTfidfBoundsMatrix, file = matrixFile, sep = ";", dec = ",", col.names = NA)
