@@ -1,21 +1,20 @@
-#wÅ‚Ä…czenie bibliotek
+#w³¹czenie bibliotek
 library(tm)
 
 #zmiana katalogu roboczego
 workDir <- "C:\\Users\\Beniamin\\Desktop\\Nowy folder\\TextMining"
 setwd(workDir)
 
-#definicja katalogÃ³w projektu
+#definicja katalogów projektu
 inputDir <- ".\\data"
 outputDir <- ".\\results"
-scriptsDir <- ".\\scripts"
 workspaceDir <- ".\\workspaces"
 
-#utworzenie katalogu wyjÅ›ciowego
+#utworzenie katalogu wyjœciowego
 dir.create(outputDir, showWarnings = FALSE)
 dir.create(workspaceDir, showWarnings = FALSE)
 
-#utworzenie korpusu dokumentÃ³w
+#utworzenie korpusu dokumentów
 corpusDir <- paste(
   inputDir,
   "\\",
@@ -33,7 +32,7 @@ corpus <- VCorpus(
   )
 )
 
-#usuniÄ™cie rozszerzeÅ„ z nazw dokumentÃ³w
+#usuniêcie rozszerzeñ z nazw dokumentów
 cutExtensions <- function(document) {
   meta(document, "id") <- gsub(pattern = "\\.txt$", "", meta(document, "id"))
   return(document)
@@ -41,7 +40,7 @@ cutExtensions <- function(document) {
 
 corpus <- tm_map(corpus, cutExtensions)
 
-#utworzenie macierzy czÄ™stoÅ›ci
+#utworzenie macierzy czêstoœci
 tdmTfAll <- TermDocumentMatrix(corpus)
 dtmTfAll <- DocumentTermMatrix(corpus)
 tdmTfidfAll <- TermDocumentMatrix(
@@ -83,14 +82,14 @@ dtmTfidfBounds <- DocumentTermMatrix(
   )
 )
 
-#konwersja macierzy Å¼adkich do macierzy klasycznych
+#konwersja macierzy ¿adkich do macierzy klasycznych
 tdmTfAllMatrix <- as.matrix(tdmTfAll)
 dtmTfAllMatrix <- as.matrix(dtmTfAll)
 tdmTfidfAllMatrix <- as.matrix(tdmTfidfAll)
 tdmBinAllMatrix <- as.matrix(tdmBinAll)
 tdmTfBoundsMatrix <- as.matrix(tdmTfBounds)
 tdmTfidfBoundsMatrix <- as.matrix(tdmTfidfBounds)
-dtmTfidfBoundsMAtrix <- as.matrix(dtmTfidfBounds)
+dtmTfidfBoundsMatrix <- as.matrix(dtmTfidfBounds)
 
 #eksport macirzy do pliku .csv
 #matrixFile <- paste(
